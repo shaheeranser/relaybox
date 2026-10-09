@@ -10,7 +10,7 @@ async def create_pool(dsn: str) -> asyncpg.Pool:
     return pool
 
 async def run_migrations(pool: asyncpg.Pool):
-    migrations_dir = Path(__file__).resolve().parent.parent.parent / 'db' / 'migrations'
+    migrations_dir = Path(__file__).resolve().parent.parent / 'db' / 'migrations'
     if not migrations_dir.exists():
         return
     
