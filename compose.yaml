@@ -50,5 +50,10 @@ services:
       SINK_STATUS_CODE: ${SINK_STATUS_CODE:-200}
       SINK_DELAY_MS: ${SINK_DELAY_MS:-0}
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:8080"
+
 volumes:
   pgdata:
