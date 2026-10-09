@@ -47,8 +47,7 @@ CREATE TABLE delivery_attempts (
 
 CREATE INDEX idx_deliveries_claimable
     ON deliveries (next_attempt_at)
-    WHERE status IN ('pending', 'failed')
-      AND (locked_until IS NULL OR locked_until < now());
+    WHERE status IN ('pending', 'failed');
 
 CREATE INDEX idx_deliveries_event ON deliveries (event_id);
 CREATE INDEX idx_deliveries_subscription ON deliveries (subscription_id);
