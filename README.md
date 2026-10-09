@@ -7,7 +7,8 @@ with HMAC-SHA256, and keeps a durable audit trail of every attempt.
 ## Quick Start
 
 ```bash
-export RELAYBOX_API_TOKEN=changeme
+cp .env.example .env
+# Edit .env to set a secure RELAYBOX_API_TOKEN if desired
 docker compose up --build
 ```
 
