@@ -7,3 +7,4 @@ __pycache__/
 .neatcode.json
 .venv/
 docs/
+compose.override.yaml
