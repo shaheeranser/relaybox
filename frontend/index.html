@@ -31,7 +31,14 @@
       <div class="bg-white p-6 rounded shadow overflow-y-auto max-h-96">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl font-semibold">Subscriptions</h2>
-          <button onclick="loadSubs()" class="text-sm bg-gray-200 px-2 py-1 rounded">Refresh</button>
+          <button onclick="loadSubs()" class="text-sm bg-gray-200 px-2 py-1 rounded hover:bg-gray-300">Refresh</button>
+        </div>
+        <div class="mb-4 space-y-2 border-b pb-4">
+          <input type="text" id="sub-url" placeholder="Webhook URL (e.g., http://localhost:9000)" class="border p-2 rounded w-full text-sm">
+          <input type="text" id="sub-events" placeholder="Event Types (comma separated, or *)" class="border p-2 rounded w-full text-sm">
+          <input type="text" id="sub-secret" placeholder="Signing Secret (optional)" class="border p-2 rounded w-full text-sm">
+          <button onclick="createSub()" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Add Subscription</button>
+          <p id="sub-status" class="text-xs mt-1"></p>
         </div>
         <ul id="subs-list" class="space-y-2 text-sm"></ul>
       </div>
@@ -120,10 +127,46 @@
       } catch (e) { console.error(e); }
     }
 
+    async function createSub() {
+      const statusEl = document.getElementById('sub-status');
+      try {
+        const url = document.getElementById('sub-url').value;
+        const events = document.getElementById('sub-events').value.split(',').map(s => s.trim()).filter(Boolean);
+        const secret = document.getElementById('sub-secret').value || 'secret';
+        
+        const res = await fetch(`${apiUrl()}/v1/subscriptions`, {
+          method: 'POST',
+          headers: getHeaders(),
+          body: JSON.stringify({ url, event_types: events.length ? events : ['*'], secret, active: true })
+        });
+        if (res.ok) {
+          statusEl.innerText = 'Subscription created!';
+          statusEl.className = 'text-green-600 mt-1';
+          document.getElementById('sub-url').value = '';
+          document.getElementById('sub-events').value = '';
+          document.getElementById('sub-secret').value = '';
+          loadSubs();
+        } else {
+          statusEl.innerText = `Error: ${res.statusText}`;
+          statusEl.className = 'text-red-600 mt-1';
+        }
+      } catch (e) {
+        statusEl.innerText = `Error: ${e.message}`;
+        statusEl.className = 'text-red-600 mt-1';
+      }
+    }
+
     async function replay(id) {
       await fetch(`${apiUrl()}/v1/deliveries/${id}/replay`, { method: 'POST', headers: getHeaders() });
       loadDeliveries();
     }
+
+    // Auto-refresh when token is provided
+    setInterval(() => {
+      if (document.getElementById('api-token').value) {
+        loadDeliveries();
+      }
+    }, 2000);
   </script>
 </body>
 </html>
