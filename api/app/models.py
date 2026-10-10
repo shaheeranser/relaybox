@@ -2,6 +2,7 @@
 from __future__ import annotations
 from pydantic import BaseModel
 from datetime import datetime
+from uuid import UUID
 
 class CreateEvent(BaseModel):
     type: str
@@ -23,18 +24,18 @@ class UpdateSubscription(BaseModel):
     description: str | None = None
 
 class EventCreated(BaseModel):
-    event_id: str
+    event_id: UUID
     deliveries_created: int
 
 class DeliveryBrief(BaseModel):
-    id: str
-    subscription_id: str
+    id: UUID
+    subscription_id: UUID
     status: str
     attempts: int
     created_at: datetime
 
 class EventDetail(BaseModel):
-    id: str
+    id: UUID
     type: str
     payload: dict
     idempotency_key: str | None
@@ -42,7 +43,7 @@ class EventDetail(BaseModel):
     deliveries: list[DeliveryBrief]
 
 class SubscriptionOut(BaseModel):
-    id: str
+    id: UUID
     url: str
     event_types: list[str]
     active: bool
@@ -51,9 +52,9 @@ class SubscriptionOut(BaseModel):
     updated_at: datetime
 
 class DeliveryOut(BaseModel):
-    id: str
-    event_id: str
-    subscription_id: str
+    id: UUID
+    event_id: UUID
+    subscription_id: UUID
     status: str
     attempts: int
     next_attempt_at: datetime | None
@@ -62,7 +63,7 @@ class DeliveryOut(BaseModel):
     updated_at: datetime
 
 class AttemptOut(BaseModel):
-    id: str
+    id: UUID
     attempt_no: int
     status_code: int | None
     error: str | None
